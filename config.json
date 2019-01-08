@@ -1,0 +1,48 @@
+{
+  "dataFile": "input_hw_grades.csv",
+  "convertBlanksTo": 0,
+  "useAbove": 0.2,
+  "dataHeaders": {
+    "group": "Group",
+    "data": [
+      "Project #0",
+      "Project #1",
+      "Project #2",
+      "Project #3",
+      "Project #4",
+      "Project #5",
+      "Project #6",
+      "Project #7"
+    ]
+  },
+  "groupMapFile": "input_grading_groups.csv",
+  "groupHeaders": {
+    "project": "Project",
+    "projectPrefix": "Project #",
+    "group": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20"
+    ]
+  },
+  "output": {
+    "format": "xlsx"
+  }
+}
