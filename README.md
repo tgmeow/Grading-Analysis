@@ -1,9 +1,9 @@
 # Analyze Grades
 This Python 3 program sorts grades by grader to generate a box plot and calculate the 
 CDF under the assumption that the data models an approximately normal 
-hypergeometric distribution. This helps to identify biased graders by finding the probability of getting 
-a more extreme sample from the overall (where extreme means having more samples greater than or equal 
-to some cutoff).
+hypergeometric distribution. This helps to identify biased graders by finding the probability of 
+getting a more extreme sample from the overall (where extreme means having more samples greater than
+or equal to some cutoff).
 
 ## Introduction
 
@@ -17,20 +17,25 @@ To learn more, see [Wikipedia](https://en.wikipedia.org/wiki/Hypergeometric_dist
 [SciPy documentation.](https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.hypergeom.html)
 
 Although in this program, each grader is intended to be assigned a grading group for each project,
-the math works under the assumption that each grader gets an approximately random sample-without-replacement of
-all the grades. The cutoffs, determined by the 1st, 2nd, and 3rd quartiles of each grader, are used
-to count the number of grades that are larger than or equal to the cutoff in both the total and the
-sample. This number represents how many items of interest we have in total and in our selection. 
-By combining these two numbers with the sample size and the total size, we approximately model a hypergeometric
-distribution.
+the math works under the assumption that each grader gets an approximately random 
+sample-without-replacement of all the grades. The cutoffs, determined by the 1st, 2nd, and 3rd 
+quartiles of each grader, are used to count the number of grades that are larger than or equal to 
+the cutoff in both the total and the sample. This number represents how many items of interest we 
+have in total and in our selection. By combining these two numbers with the sample size and the 
+total size, we approximately model a hypergeometric distribution.
 
-A few problems with this approach are that we assume that the graders get a random sample of the grades.
-Since the graders do not actually get a random sample, any non-random ordering or grouping MAY
-affect the results. Additionally, since we do not know the actual grades for a correctly graded 
-assignment, a large number of incorrectly graded assignments may skew the results and hide possible biases.
+A few problems with this approach are that we assume that the graders get a random sample of the 
+grades. Since the graders do not actually get a random sample, any non-random ordering or grouping 
+MAY affect the results. Additionally, since we do not know the actual grades for a correctly graded 
+assignment, a large number of incorrectly graded assignments may skew the results and hide possible 
+biases.
   
 
 ## Requirements
+- Large enough dataset
+    - It is important for each grader to have enough grades to help normalize their 'sample.'
+    - (Most grading systems should have an "Export to CSV" function. Be sure the grades are in 
+percent format)
 - Python 3
 - numpy
 - pandas
@@ -40,36 +45,43 @@ assignment, a large number of incorrectly graded assignments may skew the result
 - Something to view/edit xlsx and csv files (preferably Microsoft Excel)
 
 ## Running
-Run in terminal and look for any errors printed in the console.
+Run in terminal and look for any errors printed in the console. The program takes one command-line
+argument. It is the path to the config file.
 ```bash
-python analyzeGrades.py
+python analyzeGrades.py examples/config_example1.json
 ```
 
 ## Example Output and Analysis
 Must have input files (dataFile and groupMapFile as specified in the config).  
-```dataFile``` is a table of the grades by project for all students and groups. See 
-[input_data_example1.csv](/examples/input_data_example1.csv) for an example.   
+```dataFile``` is a table of the grades (as a percent) by project for all students and groups. See 
+[input_data_example1.csv](examples/input_data_example1.csv) for an example.   
 ```groupMapFile``` is a table that maps grader name and project number to group number. See 
-[input_groups_example1.csv](/examples/input_groups_example1.csv) for an example.   
+[input_groups_example1.csv](examples/input_groups_example1.csv) for an example.   
 ```bash
-$ python analyzeGrades.py
+$ python analyzeGrades.py examples/config_example1.json
 Done.
 ```
 Upon successful exit (as shown above), output_prob_data.xlsx will be created. This file
-contains **three spreadsheets**. See [output_analysis_data.xlsx](/examples/output_analysis_data.xlsx) for an example.
+contains **three spreadsheets**. See [output_analysis_data.xlsx](examples/output_analysis_data.xlsx)
+for an example.
   
 1. **Analysis Output**   
     - Table with whiskers, quartiles, (M N n x) for the CDF function, and the CDFs for
-each quartile. The CDFs show the probability of getting a less extreme sample (sample with fewer grades >= the cutoff).
-    - Conditional Formatting is utilized to highlight the numbers on the lower and higher end for each row.
+each quartile. The CDFs show the probability of getting a less extreme sample (sample with fewer 
+grades >= the cutoff).
+    - Conditional Formatting is utilized to highlight the numbers on the lower and higher end for 
+    each row.
     
 2. **Raw Data By Grader**   
-    - Table containing all the grades each grader gave. This can be useful for visual inspection and confirmation.
-    - Conditional Formatting is utilized to help highlight any other trends such as a grader giving out free 100s.
+    - Table containing all the grades each grader gave. This can be useful for visual inspection 
+    and confirmation.
+    - Conditional Formatting is utilized to help highlight any other trends such as a grader giving 
+    out free 100s.
 
 3. **Box And Whisker**   
-    - Table containing the low, mid, high values for the box chart and the actual box chart. The box chart
-    can be used to visually compare the middle 50% for each grader and identify possible issues or trends.
+    - Table containing the low, mid, high values for the box chart and the actual box chart. The box
+     chart can be used to visually compare the middle 50% for each grader and identify possible 
+     issues or trends.
 
 
 ## Configuration File
@@ -81,7 +93,7 @@ It must be named config.json. I would recommend focusing on the variables listed
  
 ### Options
 Outlined here is the JSON file with variable names, expected type, and example values. 
-Take a look at [config.json](/examples/config.json) for reference.
+Take a look at [config.json](examples/config_example1.json) for reference.
  
 **Make sure the column and row labels (project# and group#) for the two files match!**
  
@@ -102,12 +114,13 @@ example="input_groups_example1.csv"
 - ```groupHeaders : Object``` - Specifies the columns of the ```groupMapFile``` to use
     - ```project : string``` - Name of the column that contains project number of that row   
     example="Project"
-    - ```group : Array<string>``` - List of the group numbers to use. Ignores data for groups not in this list   
+    - ```group : Array<string>``` - List of the group numbers to use. Ignores data for groups not 
+    in this list   
     example=["1", "2", "3", "4", "5", "6"]
 - ```output : Object``` - Specifies the output file(s) and options for them
     - ```filename : string``` - Name of the output file  
     example="output_analysis_data"
-    - ```format : string``` - Output data file format. **Currently only fully supports xlsx**
+    - ```format : string``` - Output data file format. **Currently only fully supports xlsx**  
     example="xlsx"
     - ```xlsxChart : Object``` - Specifies the options for the chart in the xlsx file
         - ```y_axis : Object``` - Specifies the options for the chart's y-axis

@@ -72,8 +72,10 @@ def load_files():
     Loads the required files from disk and returns them
     :return: config as a dictionary, groups_map as a pandas table, data as a pandas table
     """
+    config_filename = sys.argv[1] if (len(sys.argv) >= 2) else 'config.json'
+
     # Read in config file
-    config = read_config('config.json')
+    config = read_config(config_filename)
 
     # Expected columns
     cols = config['groupHeaders']['group']
@@ -191,11 +193,16 @@ def create_xlsx(config, data_out, grades_keys, grades_values, bw_out):
 
     ws3.add_chart(chart1, 'A7')
 
+    filename = config['output']['filename'] + '.xlsx'
+
     try:
-        wb.save(filename=config['output']['filename'] + '.xlsx')
+        wb.save(filename=filename)
     except IOError:
         print("ERROR: FAILED TO SAVE XLSX! "
               "Please make sure the file is not already open", file=sys.stderr)
+    else:
+        print("Successfully created %s" % filename)
+
 
 
 def main():
