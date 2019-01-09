@@ -214,6 +214,7 @@ def main():
             if group_num in group_col_list:
                 grader = groups_map.at[index2, group_num]
                 # print(group_num, "\t", index2, "\t", grader)
+                # print(item)
                 if item > use_threshold:
                     grades.setdefault(combined, []).append(item)
                     grades.setdefault(grader, []).append(item)
@@ -221,7 +222,12 @@ def main():
     # Create box plot
     grades_values = list(grades.values())
     grades_keys = list(grades.keys())
-    box_values = plt.boxplot(grades_values, labels=grades_keys)
+    try:
+        box_values = plt.boxplot(grades_values, labels=grades_keys)
+    except ValueError as e:
+        print('Keys: %a' % grades_keys, file=sys.stderr)
+        print('Values: %a' % grades_values, file=sys.stderr)
+        sys.exit('EXCEPTION: ValueError! ' + str(e))
     # Retrieve data from the box plot
     res = {key: [v.get_ydata() for v in value] for key, value in box_values.items()}
 
