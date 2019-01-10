@@ -31,7 +31,8 @@ def read_config(filename):
     try:
         with open(filename, 'r') as json_config:
             config = json.load(json_config)
-    except EnvironmentError:
+    except EnvironmentError as e:
+        print(e, file=sys.stderr)
         sys.exit('EXITING... Failed to open config file.')
     return config
 
@@ -47,7 +48,8 @@ def read_groups(filename, columns):
     """
     try:
         groups_map = pd.read_csv(filename, sep=',', usecols=columns, index_col=0)
-    except ValueError:
+    except ValueError as e:
+        print(e, file=sys.stderr)
         sys.exit('EXITING... Columns specified in config not found in file %s' % filename)
     return groups_map
 
@@ -62,7 +64,8 @@ def read_data(filename, columns, convert):
     """
     try:
         data = pd.read_csv(filename, sep=',', usecols=columns, converters=convert)
-    except ValueError:
+    except ValueError as e:
+        print(e, file=sys.stderr)
         sys.exit('EXITING... Columns specified in config not found in file %s' % filename)
     return data
 
@@ -90,7 +93,7 @@ def load_files():
 
     # Function to convert percents to floats in the 'data' columns
     def perc2float(x):
-        if x == "":
+        if x == "" or x == 'N/A':
             return config['convertBlanksTo']
         return float(x.strip('%')) / 100
 
@@ -220,7 +223,8 @@ def create_xlsx(config, data_out, grades_keys, grades_values, bw_out):
 
     try:
         wb.save(filename=filename)
-    except IOError:
+    except IOError as e:
+        print(e, file=sys.stderr)
         print("ERROR: FAILED TO SAVE XLSX! "
               "Please make sure the file is not already open", file=sys.stderr)
     else:
@@ -285,7 +289,8 @@ def main():
         plt.yticks(np.arange(use_threshold, 1.1, step=0.05))
         try:
             plt.savefig('output_box_plot.png', dpi=200)
-        except IOError:
+        except IOError as e:
+            print(e, file=sys.stderr)
             print("ERROR: FAILED TO SAVE PYPLOT FIGURE! "
                   "Please make sure the file is not already open", file=sys.stderr)
         # plt.show()
