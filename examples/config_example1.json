@@ -22,6 +22,7 @@
       "5"
     ]
   },
+  "excludeGraders": [],
   "output": {
     "filename": "examples/output_analysis_example1",
     "format": "xlsx",
@@ -33,6 +34,41 @@
       },
       "width": 14,
       "height": 15
+    },
+    "condFormat": {
+      "quartiles": {
+        "start_type": "percentile",
+        "start_value": 0,
+        "start_color": "3333FF",
+        "mid_type": "percentile",
+        "mid_value": 50,
+        "mid_color": "FFFFFF",
+        "end_type": "percentile",
+        "end_value": 100,
+        "end_color": "FF3333"
+      },
+      "CDFs": {
+        "start_type": "num",
+        "start_value": 0,
+        "start_color": "3333FF",
+        "mid_type": "percentile",
+        "mid_value": 50,
+        "mid_color": "FFFFFF",
+        "end_type": "num",
+        "end_value": 1,
+        "end_color": "FF3333"
+      },
+      "rawGrades": {
+        "start_type": "min",
+        "start_value": null,
+        "start_color": "FF8080",
+        "mid_type": "percentile",
+        "mid_value": 50,
+        "mid_color": "FFEB84",
+        "end_type": "max",
+        "end_value": null,
+        "end_color": "63BE7B"
+      }
     },
     "pyplot": false
   }

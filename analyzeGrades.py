@@ -120,13 +120,28 @@ def create_xlsx(config, data_out, grades_keys, grades_values, bw_out):
     # ws1.title = 'Analysis Output'
     for row in data_out:
         ws1.append(row)
-    rule_color_grad_perc = ColorScaleRule(start_type='percentile', start_value=0, start_color='3333FF',
-                                     mid_type='percentile', mid_value=50, mid_color='FFFFFF',
-                                     end_type='percentile', end_value=100, end_color='FF3333')
 
-    rule_color_grad_cdfs = ColorScaleRule(start_type='num', start_value=0, start_color='3333FF',
-                                          mid_type='percentile', mid_value=50, mid_color='FFFFFF',
-                                          end_type='num', end_value=1, end_color='FF3333')
+    rc_rules_q = config['output']['condFormat']['quartiles']
+    rule_color_grad_perc = ColorScaleRule(start_type=rc_rules_q['start_type'],
+                                          start_value=rc_rules_q['start_value'],
+                                          start_color=rc_rules_q['start_color'],
+                                          mid_type=rc_rules_q['mid_type'],
+                                          mid_value=rc_rules_q['mid_value'],
+                                          mid_color=rc_rules_q['mid_color'],
+                                          end_type=rc_rules_q['end_type'],
+                                          end_value=rc_rules_q['end_value'],
+                                          end_color=rc_rules_q['end_color'])
+
+    rc_rules_c = config['output']['condFormat']['CDFs']
+    rule_color_grad_cdfs = ColorScaleRule(start_type=rc_rules_c['start_type'],
+                                          start_value=rc_rules_c['start_value'],
+                                          start_color=rc_rules_c['start_color'],
+                                          mid_type=rc_rules_c['mid_type'],
+                                          mid_value=rc_rules_c['mid_value'],
+                                          mid_color=rc_rules_c['mid_color'],
+                                          end_type=rc_rules_c['end_type'],
+                                          end_value=rc_rules_c['end_value'],
+                                          end_color=rc_rules_c['end_color'])
 
     # Color the Q1, Q2, Q3 and the 3 CDFs, 1 based index
     rows_percentile = ['3', '4', '5']
@@ -147,10 +162,18 @@ def create_xlsx(config, data_out, grades_keys, grades_values, bw_out):
     for row in [*itertools.zip_longest(*grades_values)]:
         ws2.append(row)
 
-    rule_color_grad_grades = ColorScaleRule(start_type='min', start_color='FF8080',
-                                          mid_type='percentile', mid_value=50, mid_color='FFEB84',
-                                          end_type='max',  end_color='63BE7B')
-    cond_range = 'A2:' + get_column_letter(len(grades_keys)) + str(max([len(i) for i in grades_values])+1)
+    rc_rules_g = config['output']['condFormat']['rawGrades']
+    rule_color_grad_grades = ColorScaleRule(start_type=rc_rules_g['start_type'],
+                                            start_value=rc_rules_g['start_value'],
+                                            start_color=rc_rules_g['start_color'],
+                                            mid_type=rc_rules_g['mid_type'],
+                                            mid_value=rc_rules_g['mid_value'],
+                                            mid_color=rc_rules_g['mid_color'],
+                                            end_type=rc_rules_g['end_type'],
+                                            end_value=rc_rules_g['end_value'],
+                                            end_color=rc_rules_g['end_color'])
+
+    cond_range = 'A2:' + get_column_letter(len(grades_keys)) + str(max([len(i) for i in grades_values]) + 1)
     ws2.conditional_formatting.add(cond_range, rule_color_grad_grades)
 
     # Older compatible Box Whisker Plot
@@ -204,7 +227,6 @@ def create_xlsx(config, data_out, grades_keys, grades_values, bw_out):
         print("Successfully created %s" % filename)
 
 
-
 def main():
     config, groups_map, data = load_files()
 
@@ -215,6 +237,7 @@ def main():
     group_col = config['dataHeaders']['group']
     group_col_list = config['groupHeaders']['group']
     use_threshold = config['useAbove']
+    exclude = config['excludeGraders'] if 'excludeGraders' in config else []
     for index1, row in data.iterrows():
         group_num = str(int(row.at[group_col]))
         for index2, item in row.filter(items=data_cols).iteritems():
@@ -222,7 +245,7 @@ def main():
                 grader = groups_map.at[index2, group_num]
                 # print(group_num, "\t", index2, "\t", grader)
                 # print(item)
-                if item > use_threshold:
+                if item > use_threshold and grader not in exclude:
                     grades.setdefault(combined, []).append(item)
                     grades.setdefault(grader, []).append(item)
 
