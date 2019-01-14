@@ -36,7 +36,7 @@ biases.
     - It is important for each grader to have enough grades to help normalize their 'sample.'
     - (Most grading systems should have an "Export to CSV" function. Be sure the grades are in 
 percent format)
-- Python 3
+- Python 3 (see [requirements.txt](requirements.txt))
     - numpy
     - pandas
     - scipy
